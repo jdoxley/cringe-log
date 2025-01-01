@@ -54,6 +54,7 @@ export async function signInWithDiscord() {
         console.log(error)
         redirect('/error')
     }
-    revalidatePath('/', 'layout')
-    redirect('/')
+    if (data.url) {
+        redirect(data.url)
+    }
 }
