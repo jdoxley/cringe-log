@@ -50,4 +50,10 @@ export async function signInWithDiscord() {
     const supabase = await createClient()
     console.log(env.NEXT_PUBLIC_URL)
     const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: `${env.NEXT_PUBLIC_URL}/auth/callback` } })
+    if (error) {
+        console.log(error)
+        redirect('/error')
+    }
+    revalidatePath('/', 'layout')
+    redirect('/')
 }
