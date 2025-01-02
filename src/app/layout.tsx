@@ -19,10 +19,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <body>
-        <SpeedInsights />
-        <Analytics />
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+      <body className="bg-slate-800">
+        <div className=" text-white container mx-auto p-4">
+          <SpeedInsights />
+          <Analytics />
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </div>
       </body>
     </html>
   );

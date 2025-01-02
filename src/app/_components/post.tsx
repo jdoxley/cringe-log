@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { api } from "~/trpc/react";
+import { snowflakeToUnixString } from "~/utils/snowlfake";
 
 export function LatestPost() {
   const [latestPost] = api.post.getLatest.useSuspenseQuery();
@@ -15,11 +16,12 @@ export function LatestPost() {
       setName("");
     },
   });
+  const ts = new Date(snowflakeToUnixString(latestPost!.snowflake) * 1000).toString()
 
   return (
     <div className="w-full max-w-xs">
       {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
+        <p className="">Your most recent post: {ts}</p>
       ) : (
         <p>You have no posts yet.</p>
       )}

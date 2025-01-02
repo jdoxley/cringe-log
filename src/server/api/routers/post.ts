@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createClient } from "~/utils/supabase/server";
 
 // Mocked DB
 interface Post {
@@ -34,7 +35,17 @@ export const postRouter = createTRPCRouter({
       return post;
     }),
 
-  getLatest: publicProcedure.query(() => {
-    return posts.at(-1) ?? null;
+  getLatest: publicProcedure.query(async () => {
+    const supabase = await createClient();
+    let { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .order('snowflake', { ascending: false })
+      .limit(1)
+      .single();
+    if (error)
+      console.log(error)
+    console.log(data)
+    return data ?? null;
   }),
 });
