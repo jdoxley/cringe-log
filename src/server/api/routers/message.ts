@@ -27,7 +27,7 @@ export const messageRouter = createTRPCRouter({
         }),
     getMessages: publicProcedure.query(async ({ ctx: { supabase, userId } }) => {
         const { data: d, error: e } = await supabase.from('profiles').select('view_messages').eq('id', userId!).limit(1).single();
-        const { data, error } = await supabase.from('messages').select().in('posted_by', d!.view_messages);
+        const { data, error } = await supabase.from('messages').select().in('posted_by', d!.view_messages).order('snowflake');
         if (error)
             console.log(error)
         const newdata = data?.map((e) => {
