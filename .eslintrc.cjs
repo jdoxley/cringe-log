@@ -1,5 +1,6 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
+  "ignorePatterns": ["database.types.ts"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": true

@@ -18,7 +18,7 @@ export const memberRouter = createTRPCRouter({
         const { data, error } = await supabase.from('members').select('*').in('discord_id', submit_messages);
         if (error)
             console.log(error)
-        return data || null
+        return data ?? null
     }),
     getAllView: publicProcedure.query(async () => {
         const supabase = await createClient()
@@ -34,6 +34,6 @@ export const memberRouter = createTRPCRouter({
         const { data, error } = await supabase.from('members').select('*').in('discord_id', view_messages);
         if (error)
             console.log(error)
-        return data || null
+        return data ?? null
     })
 });

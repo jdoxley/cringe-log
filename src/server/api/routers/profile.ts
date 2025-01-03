@@ -8,7 +8,7 @@ export const profileRouter = createTRPCRouter({
         .input(z.object({ id: z.string() }))
         .query(async ({ input }) => {
             const supabase = await createClient();
-            let { data: profile, error } = await supabase
+            const { data: profile, error } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', input.id)
@@ -40,7 +40,7 @@ export const profileRouter = createTRPCRouter({
     getAllProfiles: publicProcedure
         .query(async () => {
             const supabase = await createClient();
-            let { data, error } = await supabase
+            const { data, error } = await supabase
                 .from('profiles')
                 .select();
             if (error) {

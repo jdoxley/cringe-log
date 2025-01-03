@@ -42,7 +42,8 @@ export default function SubmitMessage() {
 
         try {
             // Extract channel and message IDs from Discord URL
-            const match = discordUrl.match(/discord\.com\/channels\/@me\/(\d+)\/(\d+)/)
+            const r = RegExp(/discord\.com\/channels\/@me\/(\d+)\/(\d+)/)
+            const match = r.exec(discordUrl)
 
             if (!match) {
                 throw new Error("Invalid Discord message URL format")
@@ -138,20 +139,6 @@ export default function SubmitMessage() {
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>{error}</AlertDescription>
                             </Alert>
-                        )}
-
-                        {channelId && messageId && (
-                            <div className="space-y-2 p-4 bg-muted rounded-lg">
-                                <p className="text-sm">
-                                    <span className="font-medium">User:</span> {users.find(u => u.id === selectedUser)?.name || 'Unknown'}
-                                </p>
-                                <p className="text-sm">
-                                    <span className="font-medium">Channel ID:</span> {channelId}
-                                </p>
-                                <p className="text-sm">
-                                    <span className="font-medium">Message ID:</span> {messageId}
-                                </p>
-                            </div>
                         )}
 
                         <Button type="submit" className="w-full">

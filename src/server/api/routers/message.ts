@@ -23,7 +23,7 @@ export const messageRouter = createTRPCRouter({
             ).select()
             if (error)
                 console.log(error)
-            return data || null;
+            return data ?? null;
         }),
     getMessages: publicProcedure.query(async ({ ctx: { supabase, userId } }) => {
         const { data: d, error: e } = await supabase.from('profiles').select('view_messages').eq('id', userId!).limit(1).single();
@@ -34,6 +34,6 @@ export const messageRouter = createTRPCRouter({
             const posted_at = new Date(snowflakeToUnixString(e.snowflake) * 1000)
             return { ...e, posted_at }
         })
-        return newdata || null;
+        return newdata ?? null;
     })
 });

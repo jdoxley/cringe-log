@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body className="bg-slate-800">
-        <div className=" text-white container mx-auto p-4">
+        <div className="container mx-auto p-4 text-white">
           <SpeedInsights />
           <Analytics />
           <TRPCReactProvider>{children}</TRPCReactProvider>
