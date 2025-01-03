@@ -22,6 +22,7 @@ import {
 } from "~/components/ui/select";
 import { api } from "~/trpc/react";
 import { Checkbox } from "~/components/ui/checkbox";
+import { set } from "date-fns";
 
 // Mock user data - in a real application, this would come from your backend
 const users = [
@@ -86,6 +87,7 @@ export default function SubmitMessage() {
       setSelectedUser("");
       setChannelId("");
       setMessageId("");
+      setCringe(false);
       if (formRef.current) {
         formRef.current.reset();
       }
