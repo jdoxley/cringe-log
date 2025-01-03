@@ -70,7 +70,7 @@ export default function SubmitMessage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="min-h-[80vh] flex items-center justify-center p-4">
             <Card className="w-full max-w-md">
                 <CardHeader>
                     <CardTitle>Submit Discord Message</CardTitle>

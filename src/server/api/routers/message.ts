@@ -2,6 +2,8 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 import { createClient } from "~/utils/supabase/server";
+import { memberRouter } from "./members";
+import { snowflakeToUnixString } from "~/utils/snowlfake";
 
 export const messageRouter = createTRPCRouter({
     create: publicProcedure
@@ -22,5 +24,16 @@ export const messageRouter = createTRPCRouter({
             if (error)
                 console.log(error)
             return data || null;
+        }),
+    getMessages: publicProcedure.query(async ({ ctx: { supabase, userId } }) => {
+        const { data: d, error: e } = await supabase.from('profiles').select('view_messages').eq('id', userId!).limit(1).single();
+        const { data, error } = await supabase.from('messages').select().in('posted_by', d!.view_messages);
+        if (error)
+            console.log(error)
+        const newdata = data?.map((e) => {
+            const posted_at = new Date(snowflakeToUnixString(e.snowflake) * 1000)
+            return { ...e, posted_at }
         })
+        return newdata || null;
+    })
 });

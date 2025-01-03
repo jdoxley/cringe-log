@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
 import { Calendar } from "~/components/ui/calendar"
+import { api } from '~/trpc/react'
 
 // Sample data
 const messages = [
@@ -23,20 +24,22 @@ const messages = [
 ]
 
 export default function MessagesPage() {
+    const { data: viewFilter } = api.member.getAllView.useQuery();
+    const { data: messages } = api.message.getMessages.useQuery();
     const [dateFrom, setDateFrom] = useState<Date>()
     const [dateTo, setDateTo] = useState<Date>()
     const [author, setAuthor] = useState<string>("all")
     const [searchTerm, setSearchTerm] = useState<string>("")
 
-    const filteredMessages = messages.filter(message => {
-        const messageDate = new Date(message.date)
+    const filteredMessages = messages?.filter(message => {
+        const messageDate = new Date(message.posted_at)
         const matchesDateRange = (!dateFrom || messageDate >= dateFrom) && (!dateTo || messageDate <= dateTo)
-        const matchesAuthor = author === "all" || message.author === author
-        const matchesSearch = message.content.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesAuthor = author === "all" || message.posted_by === author
+        const matchesSearch = message.message_content?.toLowerCase().includes(searchTerm.toLowerCase())
         return matchesDateRange && matchesAuthor && matchesSearch
     })
 
-    const uniqueAuthors = Array.from(new Set(messages.map(m => m.author)))
+    const uniqueAuthors = viewFilter;
 
     return (
         <div className="container mx-auto py-10">
@@ -47,7 +50,7 @@ export default function MessagesPage() {
                     <Label htmlFor="date-from">From</Label>
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-[130px] justify-start text-left font-normal ml-2 text-black">
+                            <Button variant="outline" className="w-[130px] justify-start text-left font-normal ml-2 pl-2.5 text-black">
                                 <CalendarIcon className="mr-2 h-4 w-4" color='black' />
                                 {dateFrom ? format(dateFrom, "PP") : <span>Pick a date</span>}
                             </Button>
@@ -62,7 +65,7 @@ export default function MessagesPage() {
                     <Label htmlFor="date-to">To</Label>
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-[130px] justify-start text-left font-normal ml-2 text-black">
+                            <Button variant="outline" className="w-[130px] justify-start text-left font-normal ml-2 pl-2.5 text-black">
                                 <CalendarIcon className="mr-2 h-4 w-4" color='black' />
                                 {dateTo ? format(dateTo, "PP") : <span>Pick a date</span>}
                             </Button>
@@ -81,8 +84,8 @@ export default function MessagesPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Authors</SelectItem>
-                            {uniqueAuthors.map(author => (
-                                <SelectItem key={author} value={author}>{author}</SelectItem>
+                            {uniqueAuthors?.map(author => (
+                                <SelectItem key={author.discord_id} value={author.discord_id}>{author.discord_username}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
@@ -113,11 +116,11 @@ export default function MessagesPage() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {filteredMessages.map((message) => (
-                        <TableRow key={message.id}>
-                            <TableCell>{message.date}</TableCell>
-                            <TableCell>{message.author}</TableCell>
-                            <TableCell>{message.content}</TableCell>
+                    {filteredMessages?.map((message) => (
+                        <TableRow key={message.snowflake}>
+                            <TableCell>{message.posted_at.toString()}</TableCell>
+                            <TableCell>{viewFilter?.find((e) => e.discord_id == message.posted_by)?.discord_username}</TableCell>
+                            <TableCell>{message.message_content}</TableCell>
                             <TableCell>
                                 <Checkbox checked={message.cringe} disabled className='bg-white !opacity-100' />
                             </TableCell>
